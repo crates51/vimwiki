@@ -461,7 +461,7 @@ hi def link VimwikiLinkT VimwikiLink
 hi def link VimwikiList Identifier
 hi def link VimwikiListTodo VimwikiList
 hi def link VimwikiCheckBoxDone Comment
-hi def VimwikiCheckBoxDoneGreen ctermfg=green guifg=green
+hi def VimwikiCheckBoxDoneGreen ctermfg=green guifg=#8ABF8A
 hi def link VimwikiHR Identifier
 hi def link VimwikiTag Keyword
 
