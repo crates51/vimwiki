@@ -253,6 +253,14 @@ if !exists('*VimwikiWikiIncludeHandler')
 endif
 
 
+function! s:format_title(title)
+  " Replace underscores with spaces
+  let formatted_title = substitute(a:title, '_', ' ', 'g')
+  " Capitalize the first letter
+  let formatted_title = toupper(formatted_title[0]) . formatted_title[1:]
+  return formatted_title
+endfunction
+
 " Write a level 1 header to new wiki files
 " a:fname should be an absolute filepath
 function! s:create_h1(fname) abort
@@ -283,6 +291,8 @@ function! s:create_h1(fname) abort
     " character matches characters that are intentionally used in the title.
     let title = substitute(title, vimwiki#vars#get_wikilocal('links_space_char'), ' ', 'g')
   endif
+  " Format the title
+  let title = s:format_title(title)
   " Determine the length of the title line
   let max_length = 70  " Width of the header
   let title_length = len(title)
@@ -307,7 +317,6 @@ function! s:create_h1(fname) abort
   for i in range(extra_lines)
     keepjumps call append(5 + i, '')
   endfor
-
   " Apply syntax highlighting to the title line
   call matchadd('VimwikiStarryNightTitle', '\%3l.*')
 endfunction
