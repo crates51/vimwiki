@@ -293,16 +293,20 @@ function! s:create_h1(fname) abort
   let left_padding = total_padding_length / 2
   let right_padding = total_padding_length - left_padding
 
-  " Create the header lines
+  " Create the title line
   let title_line = '#### '.repeat(' ', left_padding).' '.title.' '.repeat(' ', right_padding)
 
-  " Create the dotted line
-  let dots = '#### '.repeat('.', max_length)
+  " Create the dotted lines with O and o pattern
+  let pattern = 'Ooo'
+  let pattern_length = len(pattern)
+  let dots_line = repeat(pattern, (max_length / pattern_length) + 1)
+  let truncated_dots_line = strpart(dots_line, 0, max_length)
+  let dotted_line = '#### '.truncated_dots_line
 
   " Insert the header
-  keepjumps call append(0, dots)
+  keepjumps call append(0, dotted_line)
   keepjumps call append(1, title_line)
-  keepjumps call append(2, dots)
+  keepjumps call append(2, dotted_line)
   for _ in range(vimwiki#vars#get_global('markdown_header_style'))
     keepjumps call append(3, '')
   endfor
