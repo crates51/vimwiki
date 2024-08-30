@@ -283,32 +283,29 @@ function! s:create_h1(fname) abort
     " character matches characters that are intentionally used in the title.
     let title = substitute(title, vimwiki#vars#get_wikilocal('links_space_char'), ' ', 'g')
   endif
-
   " Determine the length of the title line
   let max_length = 70  " Width of the header
   let title_length = len(title)
-  let total_padding_length = max_length - title_length - 2  " 2 for the padding around the title
-
+  let decoration_length = 10  " Length of '⋆｡°✩ ' and ' ✩°｡⋆'
+  let total_content_length = title_length + decoration_length
+  let total_padding_length = max_length - total_content_length
   " Calculate the padding
   let left_padding = total_padding_length / 2
   let right_padding = total_padding_length - left_padding
-
   " Create the title line
-  let title_line = '#### '.repeat(' ', left_padding).' '.title.' '.repeat(' ', right_padding)
-
-  " Create the dotted lines with O and o pattern
-  let pattern = 'Ooo'
-  let pattern_length = len(pattern)
-  let dots_line = repeat(pattern, (max_length / pattern_length) + 1)
-  let truncated_dots_line = strpart(dots_line, 0, max_length)
-  let dotted_line = '#### '.truncated_dots_line
-
+  let title_line = repeat(' ', left_padding) . '⋆｡°✩   ' . title . '   ✩°｡⋆' . repeat(' ', right_padding)
+  " Create the star lines
+  let star_line = '✦✧✦✧' . repeat('✦✧', max_length / 2 - 2)
   " Insert the header
-  keepjumps call append(0, dotted_line)
-  keepjumps call append(1, title_line)
-  keepjumps call append(2, dotted_line)
-  for _ in range(vimwiki#vars#get_global('markdown_header_style'))
-    keepjumps call append(3, '')
+  keepjumps call append(0, star_line)
+  keepjumps call append(1, '')
+  keepjumps call append(2, title_line)
+  keepjumps call append(3, '')
+  keepjumps call append(4, star_line)
+  " Add empty lines based on markdown_header_style
+  let extra_lines = vimwiki#vars#get_global('markdown_header_style')
+  for i in range(extra_lines)
+    keepjumps call append(5 + i, '')
   endfor
 endfunction
 
