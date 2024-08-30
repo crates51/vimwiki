@@ -307,6 +307,9 @@ function! s:create_h1(fname) abort
   for i in range(extra_lines)
     keepjumps call append(5 + i, '')
   endfor
+
+  " Apply syntax highlighting to the title line
+  call matchadd('VimwikiStarryNightTitle', '\%3l.*')
 endfunction
 
 " Define autocommands for all known wiki extensions

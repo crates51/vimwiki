@@ -169,7 +169,18 @@ elseif vimwiki#vars#get_global('hl_cb_checked') == 2
 endif
 
 syntax match VimwikiCheckBoxDoneGreen /\[X\]/ contained containedin=VimwikiListTodo,VimwikiCheckBoxDone
+"
+" Starry Night Header
+syntax match VimwikiStarryNightBorder /^✦✧✦✧.*✦✧$/
+highlight VimwikiStarryNightBorder ctermfg=146 guifg=#B4BEFE
 
+syntax match VimwikiStarryNightTitle /^.*⋆｡°✩.*✩°｡⋆.*$/
+highlight VimwikiStarryNightTitle ctermfg=223 guifg=#F5E0DC
+
+" Highlight the star decorations in the title separately
+syntax match VimwikiStarryNightStars /[⋆｡°✩]/
+highlight VimwikiStarryNightStars ctermfg=183 guifg=#CBA6F7
+"
 " GTD-style token highlighting
 
 syntax match TodoDate       '\d\{2,4\}-\d\{2\}-\d\{2\}'       contains=VimwikiTodo
