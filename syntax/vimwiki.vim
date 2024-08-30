@@ -168,6 +168,8 @@ elseif vimwiki#vars#get_global('hl_cb_checked') == 2
         \ .'/ contains=VimwikiNoExistsLink,VimwikiLink,VimwikiWeblink1,VimwikiWikiLink1,@Spell'
 endif
 
+syntax match VimwikiCheckBoxDoneGreen /\[X\]/ contained containedin=VimwikiListTodo,VimwikiCheckBoxDone
+
 " GTD-style token highlighting
 
 syntax match TodoDate       '\d\{2,4\}-\d\{2\}-\d\{2\}'       contains=VimwikiTodo
@@ -448,6 +450,7 @@ hi def link VimwikiLinkT VimwikiLink
 hi def link VimwikiList Identifier
 hi def link VimwikiListTodo VimwikiList
 hi def link VimwikiCheckBoxDone Comment
+hi def VimwikiCheckBoxDoneGreen ctermfg=green guifg=green
 hi def link VimwikiHR Identifier
 hi def link VimwikiTag Keyword
 
@@ -507,6 +510,7 @@ hi def link TodoDate PreProc
 hi def link TodoDueDate VimWikiBold
 hi def link TodoProject Constant
 hi def link TodoContext Statement
+
 
 " Load syntax-specific functionality
 call vimwiki#u#reload_regexes_custom()
