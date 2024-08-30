@@ -283,18 +283,29 @@ function! s:create_h1(fname) abort
     " character matches characters that are intentionally used in the title.
     let title = substitute(title, vimwiki#vars#get_wikilocal('links_space_char'), ' ', 'g')
   endif
+
+  " Determine the length of the title line
+  let max_length = 70  " Width of the header
+  let title_length = len(title)
+  let total_padding_length = max_length - title_length - 2  " 2 for the padding around the title
+
+  " Calculate the padding
+  let left_padding = total_padding_length / 2
+  let right_padding = total_padding_length - left_padding
+
+  " Create the header lines
+  let title_line = '#### '.repeat(' ', left_padding).' '.title.' '.repeat(' ', right_padding)
+
+  " Create the dotted line
+  let dots = '#### '.repeat('.', max_length)
+
   " Insert the header
-  if vimwiki#vars#get_wikilocal('syntax') ==? 'markdown'
-    let equals_count = 15  " You can adjust this number to change the number of equals signs
-    let equals = repeat('=', equals_count)
-    let header = '# '.equals . ' ' . title . ' ' . equals
-    keepjumps call append(0, header)
-    for _ in range(vimwiki#vars#get_global('markdown_header_style'))
-      keepjumps call append(1, '')
-    endfor
-  else
-    keepjumps call append(0, '= ' . title . ' =')
-  endif
+  keepjumps call append(0, dots)
+  keepjumps call append(1, title_line)
+  keepjumps call append(2, dots)
+  for _ in range(vimwiki#vars#get_global('markdown_header_style'))
+    keepjumps call append(3, '')
+  endfor
 endfunction
 
 " Define autocommands for all known wiki extensions
