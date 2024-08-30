@@ -261,37 +261,34 @@ function! s:create_h1(fname) abort
   if idx == -1
     return
   endif
-
   " Clause: no auto_header
   if !vimwiki#vars#get_global('auto_header')
     return
   endif
-
   " Clause: don't create header for the diary index page
   if vimwiki#path#is_equal(a:fname,
         \ vimwiki#vars#get_wikilocal('path', idx).vimwiki#vars#get_wikilocal('diary_rel_path', idx).
         \ vimwiki#vars#get_wikilocal('diary_index', idx).vimwiki#vars#get_wikilocal('ext', idx))
     return
   endif
-
   " Get tail of filename without extension
   let title = expand('%:t:r')
-
   " Clause: don't insert header for index page
   if title ==# vimwiki#vars#get_wikilocal('index', idx)
     return
   endif
-
   " Don't substitute space char for diary pages
   if title !~# '^\d\{4}-\d\d-\d\d'
     " NOTE: it is possible this could remove desired characters if the 'links_space_char'
     " character matches characters that are intentionally used in the title.
     let title = substitute(title, vimwiki#vars#get_wikilocal('links_space_char'), ' ', 'g')
   endif
-
   " Insert the header
   if vimwiki#vars#get_wikilocal('syntax') ==? 'markdown'
-    keepjumps call append(0, '# ' . title)
+    let equals_count = 15  " You can adjust this number to change the number of equals signs
+    let equals = repeat('=', equals_count)
+    let header = '# '.equals . ' ' . title . ' ' . equals
+    keepjumps call append(0, header)
     for _ in range(vimwiki#vars#get_global('markdown_header_style'))
       keepjumps call append(1, '')
     endfor
