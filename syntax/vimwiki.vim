@@ -153,19 +153,25 @@ call s:add_target_syntax_ON(s:target, 'VimwikiLink')
 " List:
 execute 'syntax match VimwikiList /'.vimwiki#vars#get_wikilocal('rxListItemWithoutCB').'/'
 execute 'syntax match VimwikiList /'.vimwiki#vars#get_syntaxlocal('rxListDefine').'/'
-execute 'syntax match VimwikiListTodo /'.vimwiki#vars#get_wikilocal('rxListItem').'/'
 
-" Task List Done:
+execute 'syntax match VimwikiListTodo /'.vimwiki#vars#get_wikilocal('rxListItem').'\%(\s*\[\s\]\s\)/'
+
+" Checked todo items with checkmark
+execute 'syntax match VimwikiListDone /'.vimwiki#vars#get_wikilocal('rxListItem').'\%(\s*\[X\]\s\)/' . ' conceal cchar=✅ '
+
+" Task List Done (modify if needed):
 if vimwiki#vars#get_global('hl_cb_checked') == 1
   execute 'syntax match VimwikiCheckBoxDone /'.vimwiki#vars#get_wikilocal('rxListItemWithoutCB')
-        \ . '\s*\[['.vimwiki#vars#get_wikilocal('listsyms_list')[-1]
+        \ . '\s*\[\%(['.vimwiki#vars#get_wikilocal('listsyms_list')[-1]
         \ . vimwiki#vars#get_global('listsym_rejected')
-        \ . ']\]\s\(.*\)$/ '
+        \ . ']\)\]\s\(.*\)$/ '
         \ . 'contains=' . syntax_dic.nested . ',VimwikiNoExistsLink,VimwikiLink,VimwikiWeblink1,VimwikiWikiLink1,@Spell'
+        \ . ' conceal cchar=✅ '
 elseif vimwiki#vars#get_global('hl_cb_checked') == 2
   execute 'syntax match VimwikiCheckBoxDone /'
         \ . vimwiki#vars#get_wikilocal('rxListItemAndChildren')
         \ .'/ contains=VimwikiNoExistsLink,VimwikiLink,VimwikiWeblink1,VimwikiWikiLink1,@Spell'
+        \ . ' conceal cchar=✅ '
 endif
 
 " GTD-style token highlighting
@@ -507,6 +513,9 @@ hi def link TodoDate PreProc
 hi def link TodoDueDate VimWikiBold
 hi def link TodoProject Constant
 hi def link TodoContext Statement
+
+hi def link VimwikiListDone Comment
+hi Conceal guifg=Green ctermfg=Green
 
 " Load syntax-specific functionality
 call vimwiki#u#reload_regexes_custom()
