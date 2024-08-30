@@ -254,69 +254,65 @@ endif
 
 
 function! s:format_title(title)
-  " Replace underscores with spaces
+  " Replace underscores with spaces and capitalize the first letter
   let formatted_title = substitute(a:title, '_', ' ', 'g')
-  " Capitalize the first letter
-  let formatted_title = toupper(formatted_title[0]) . formatted_title[1:]
-  return formatted_title
+  return toupper(formatted_title[0]) . formatted_title[1:]
 endfunction
 
 " Write a level 1 header to new wiki files
 " a:fname should be an absolute filepath
 function! s:create_h1(fname) abort
-  " Clause: Don't do anything for unregistered wikis
+  " Check preconditions
   let idx = vimwiki#vars#get_bufferlocal('wiki_nr')
-  if idx == -1
+  if idx == -1 || !vimwiki#vars#get_global('auto_header')
     return
   endif
-  " Clause: no auto_header
-  if !vimwiki#vars#get_global('auto_header')
-    return
-  endif
-  " Clause: don't create header for the diary index page
+
+  " Don't create header for the diary index page
   if vimwiki#path#is_equal(a:fname,
         \ vimwiki#vars#get_wikilocal('path', idx).vimwiki#vars#get_wikilocal('diary_rel_path', idx).
         \ vimwiki#vars#get_wikilocal('diary_index', idx).vimwiki#vars#get_wikilocal('ext', idx))
     return
   endif
-  " Get tail of filename without extension
+
+  " Process the title
   let title = expand('%:t:r')
-  " Clause: don't insert header for index page
   if title ==# vimwiki#vars#get_wikilocal('index', idx)
     return
   endif
+
   " Don't substitute space char for diary pages
   if title !~# '^\d\{4}-\d\d-\d\d'
-    " NOTE: it is possible this could remove desired characters if the 'links_space_char'
-    " character matches characters that are intentionally used in the title.
     let title = substitute(title, vimwiki#vars#get_wikilocal('links_space_char'), ' ', 'g')
   endif
-  " Format the title
+
+  " Format and prepare the title
   let title = s:format_title(title)
-  " Determine the length of the title line
   let max_length = 70  " Width of the header
   let title_length = len(title)
   let decoration_length = 10  " Length of '⋆｡°✩ ' and ' ✩°｡⋆'
   let total_content_length = title_length + decoration_length
   let total_padding_length = max_length - total_content_length
-  " Calculate the padding
+
+  " Calculate padding and create lines
   let left_padding = total_padding_length / 2
   let right_padding = total_padding_length - left_padding
-  " Create the title line
   let title_line = repeat(' ', left_padding) . '⋆｡°✩   ' . title . '   ✩°｡⋆' . repeat(' ', right_padding)
-  " Create the star lines
   let star_line = '✦✧✦✧' . repeat('✦✧', max_length / 2 - 2)
+
   " Insert the header
   keepjumps call append(0, star_line)
   keepjumps call append(1, '')
   keepjumps call append(2, title_line)
   keepjumps call append(3, '')
   keepjumps call append(4, star_line)
+
   " Add empty lines based on markdown_header_style
   let extra_lines = vimwiki#vars#get_global('markdown_header_style')
   for i in range(extra_lines)
     keepjumps call append(5 + i, '')
   endfor
+
   " Apply syntax highlighting to the title line
   call matchadd('VimwikiStarryNightTitle', '\%3l.*')
 endfunction
